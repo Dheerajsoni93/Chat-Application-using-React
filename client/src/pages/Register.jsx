@@ -3,11 +3,17 @@ import { Alert, Button, Form, Row, Col, Stack } from "react-bootstrap";
 import { AuthContext } from "../context/AuthContext";
 
 const Register = () => {
-  const { registerInfo, updateRegisterInfo } = useContext(AuthContext);
+  const {
+    registerInfo,
+    updateRegisterInfo,
+    registerUser,
+    registerError,
+    isRegisterLoading,
+  } = useContext(AuthContext);
 
   return (
     <>
-      <Form>
+      <Form onSubmit={registerUser}>
         <Row
           style={{
             height: "100vh",
@@ -29,15 +35,35 @@ const Register = () => {
                   })
                 }
               />
-              <Form.Control type="email" placeholder="emailId" />
-              <Form.Control type="password" placeholder="password" />
+              <Form.Control
+                type="email"
+                placeholder="emailId"
+                onChange={(event) =>
+                  updateRegisterInfo({
+                    ...registerInfo,
+                    email: event.target.value,
+                  })
+                }
+              />
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                onChange={(event) =>
+                  updateRegisterInfo({
+                    ...registerInfo,
+                    password: event.target.value,
+                  })
+                }
+              />
               <Button variant="primary" type="submit">
-                SignIn
+                {isRegisterLoading ? "Creating your Account" : "Register"}
               </Button>
 
-              <Alert variant="danger">
-                <p>An error occured</p>
-              </Alert>
+              {registerError?.error && (
+                <Alert variant="danger">
+                  <p>{registerError?.message}</p>
+                </Alert>
+              )}
             </Stack>
           </Col>
         </Row>
