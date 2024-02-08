@@ -1,7 +1,7 @@
 const chatModel = require("../Models/chatModel");
 
 //create Chats
-// findUsers
+// getUserChats
 // findChats
 
 const createChat = async (req, res) => {

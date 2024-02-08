@@ -1,7 +1,6 @@
 export const baseUrl = "http://localhost:8080/api";
 
 export const postRequest = async (url, body) => {
-  console.log("body", body);
   const response = await fetch(url, {
     method: "POST",
     headers: {
