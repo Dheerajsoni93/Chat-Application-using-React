@@ -1,10 +1,10 @@
 import { useContext } from "react";
 import { ChatContext } from "../context/ChatContext";
 import { Container, Stack } from "react-bootstrap";
-import ChatBox from "../components/chat/ChatBox.jsx";
-import UserChat from "../components/chat/userChat";
+import UserChat from "../components/chat/UserChat.jsx";
 import { AuthContext } from "../context/AuthContext";
 import PotentialChats from "../components/chat/PotentialChats.jsx";
+import ChatBox from "../components/chat/ChatBox.jsx";
 
 
 const Chat = () => {
@@ -26,10 +26,10 @@ const Chat = () => {
                 <div key={index} onClick={() => updateCurrentChat(chat)}>
                   <UserChat chat={chat} user={user}/>
                 </div>
-              )
+              );
             })}
           </Stack>
-          <ChatBox />
+          <ChatBox/>
         </Stack>
       )}
     </Container>
