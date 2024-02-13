@@ -6,6 +6,7 @@ export const ChatContext = createContext();
 
 export const ChatContextProvider = ({ children, user }) => {
   const [userChats, setUserChats] = useState(null);
+  const [allUsers, setAllUsers] = useState([]);
   const [isUserChatsLoading, setIsUserChatsLoading] = useState(false);
   const [userChatsError, setUserChatsError] = useState(null);
   const [potentialChats, setPotentialChats] = useState([]);
@@ -17,8 +18,9 @@ export const ChatContextProvider = ({ children, user }) => {
   const [newMessage, setNewMessage] = useState(null);
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState(null);
+  const [notifications, setNotifications] = useState([]);
 
-  console.log("online Users", onlineUsers);
+  console.log("notifications", notifications);
 
   useEffect(() => {
     const newSocket = io("http://localhost:3000");
@@ -50,7 +52,7 @@ export const ChatContextProvider = ({ children, user }) => {
     socket.emit("sendMessage", { ...newMessage, recipientId });
   }, [newMessage]);
 
-  //recieve Message
+  //recieve Message and notification
   useEffect(() => {
     if (socket === null) return;
 
@@ -60,8 +62,19 @@ export const ChatContextProvider = ({ children, user }) => {
       setMessages((prev) => [...prev, res]);
     });
 
+    socket.on("getNotification", (res) => {
+      const isChatOpen = currentChat?.members.some((id) => id === res.senderId);
+
+      if (isChatOpen) {
+        setNotifications((prev) => [{ ...res, isRead: true }, ...prev]);
+      } else {
+        setNotifications((prev) => [res, ...prev]);
+      }
+    });
+
     return () => {
       socket.off("getMessage");
+      socket.off("getNotification")
     };
   }, [socket, currentChat]);
 
@@ -85,6 +98,7 @@ export const ChatContextProvider = ({ children, user }) => {
         return !isChatcreated;
       });
       setPotentialChats(pChats);
+      setAllUsers(response)
     };
     getUsers();
   }, [userChats]);
@@ -181,6 +195,8 @@ export const ChatContextProvider = ({ children, user }) => {
         messagesError,
         sendTextMessage,
         onlineUsers,
+        notifications,
+        allUsers,
       }}
     >
       {children}
